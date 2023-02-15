@@ -1,0 +1,88 @@
+@font-face {
+    font-family: "Oswald";
+    src: url(./assets/fonts/Oswald-VariableFont_wght.ttf);
+}
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Oswald";
+}
+body{
+    background-color: #d8e0e5;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+.calculator{
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    width: min-content;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+#display{
+    background-color: #ecf2f4;
+    padding: 7px 15px;
+    width: 100%;
+    border-radius: 4px;
+    min-height: 78px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    color: #043f51;
+}
+#expression{
+    font-size: 27px;
+}
+#result{
+    font-size: 12px;
+    opacity: 0.8;
+}
+#keyboard{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 7px;
+    justify-content: center;
+    width: fit-content;
+}
+.key{
+    border: none;
+    background-color: #ecf2f4;
+    border-radius: 3px;
+    font-size: 25px;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%; 
+    display: grid;
+    place-content: center;
+    transition: all 0.1s ease-in;
+    cursor: pointer;
+    outline: none;
+}
+#Backspace{
+    background-color: #ffd6d6;
+}
+.key > img{
+    height: 20px;
+}
+.key:active{
+    scale: 1.09
+}
+.key:first-child{
+    background-color: #bdf0ff;
+}
+.key:last-child{
+    background-color: #fff7a1;
+}
+.operator{
+    background-color: #f3d6ff;
+}
+.key:hover{
+    filter: brightness(0.9) !important;
+}
