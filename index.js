@@ -96,7 +96,8 @@ function calculate(key){
     if(result(expression) !== "Error"){
         displayResult.innerText = result(expression);
     }
-    displayExpression.innerText = expression;
+    displayExpression.value = expression;
+    displayExpression.scrollLeft = display.scrollWidth;
 }
 
 function parentheses(expression){

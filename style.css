@@ -17,9 +17,9 @@ body{
     padding: 1em;
 }
 .calculator{
-    padding: 20px;
+    padding: 1.5em;
     height: max-content;
-    border-radius: 8px;
+    border-radius: 1.1em;
     background-color: #ffffff;
     width: max-content;
     display: flex;
@@ -28,28 +28,50 @@ body{
     align-items: center;
 }
 #display{
+    position: relative;
     background-color: #ecf2f4;
-    padding: 7px 15px;
-    width: 100%;
-    border-radius: 4px;
+    padding: 0.7em 0.7em 0.7em 0;
+    width: 22.5em;
+    border-radius: 0.7em;
     min-height: 78px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
     color: #043f51;
+    overflow: hidden;
 }
 #expression{
-    font-size: 27px;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 3em;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    word-wrap: normal;
+    color: #043f51;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+}
+#display::after{
+    content: "";
+    height: 100%;
+    width: 70px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(90deg, #ecf2f4, transparent);
 }
 #result{
-    font-size: 12px;
+    font-size: 1.8em;
     opacity: 0.8;
 }
 #keyboard{
     display: grid;
     grid-template-columns: auto auto auto auto;
-    gap: 7px;
+    gap: 0.7em;
     justify-content: center;
     width: fit-content;
 }
@@ -57,9 +79,8 @@ body{
     border: none;
     background-color: #ecf2f4;
     border-radius: 3px;
-    font-size: 25px;
-    height:2em;
-    width: 2em;
+    height: 6em;
+    width: 6em;
     border-radius: 50%; 
     display: grid;
     place-content: center;
@@ -71,7 +92,7 @@ body{
     background-color: #ffd6d6;
 }
 .key > img{
-    height: 0.77em;
+    height: 2.5em;
 }
 .key:active{
     scale: 1.09
