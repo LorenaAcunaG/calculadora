@@ -70,7 +70,8 @@ function calculate(key){
                 expression += parentheses(expression); //Agrega el valor de paréntesis a la expresión
                 break;
             }
-            if((expression !== "" && expression !== "-") && key !== "-"){  // Previene el ingreso de dos operadores contiguos
+            const lastCharacter = expression[expression.length - 1];
+            if((expression !== "" && lastCharacter !== "(" && lastCharacter !== "-") && key !== "-"){  // Previene el ingreso de dos operadores contiguos o cuando el último caracter es "(" ó "-"
                 const lastCharacter = expression[expression.length-1];
                 if(operators.includes(`${lastCharacter}`) && lastCharacter !== "(" && lastCharacter !== ")"){
                     expression = expression.slice(0, -1) + key;
