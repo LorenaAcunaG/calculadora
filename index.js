@@ -21,14 +21,14 @@ const operators = ["/","*","-","+","%","(",")","×","÷"];
 //Agrega eventos a los botones para interactuar con la calculadora
 Array.from(keys).forEach((key) => {
     key.addEventListener('click', () => calculate(key.value));
-    key.addEventListener('mouseover', () => key.style.borderRadius = borderRadiusRamdom());
+    key.addEventListener('mouseover', () => key.style.borderRadius = borderRadiusRandom());
     key.addEventListener('mouseleave', () => key.style.borderRadius = '50%');
 });
 
 //Escucha pulsaciones en el teclado del dispositivo
 document.addEventListener("keyup", event => {
     const buttonKey = document.getElementById(`${event.key}`);
-    buttonKey.style.borderRadius = borderRadiusRamdom();
+    buttonKey.style.borderRadius = borderRadiusRandom();
     buttonKey.style.scale = "1.09";
     buttonKey.style.filter = "brightness(0.9)";
     setTimeout(() => {
