@@ -2,10 +2,15 @@ const display = document.getElementById('display');
 const displayExpression = display.children[0];
 const displayResult = display.children[1];
 const keys = document.getElementsByClassName('key');
-
+let history = [];
 let expression = "";
 let lastExpression = "";
 let number = "";
+
+getHistory = localStorage.getItem("history");
+if(getHistory !== null && getHistory !== undefined){
+    history = JSON.parse(getHistory);
+}
 
 const actions = ["Enter","Backspace","Delete"];
 const numbers = ["0","1","2","3","4","5","6","7","8","9","."];
@@ -87,7 +92,7 @@ function calculate(key){
             if(key === "Enter"){
                 lastExpression = "";
                 number = "";
-                expression = result(expression);
+                expression = result(expression, true);
             }
             break;
     }
@@ -109,7 +114,7 @@ function parentheses(expression){
     return "(";
 }
 
-function result(expression){
+function result(expression, save = false){
     try{
         if(!expression) return "";
         let expressionUser = expression;
@@ -121,7 +126,13 @@ function result(expression){
         .replaceAll(/\)\(/g, ")*(") // ...)(... => ...)*(...
         .replaceAll(/\((.*?)\)(\d)/g, "($1)*$2") // (expresión)num => (expresión)*num
         .replaceAll(/(\d)\((.*?)\)/g, "$1*($2)") // num(expresión) => num*(expresión)
-
+        if(save){
+            history.push({
+                "expression": expressionUser,
+                "result": milesSeparator(eval(expression).toString())
+            })
+            localStorage.setItem("history", JSON.stringify(history))
+        }
         return milesSeparator(eval(expression).toString());
     } catch (err){
         if(err) return "Error";
