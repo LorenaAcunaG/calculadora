@@ -151,7 +151,7 @@ function result(expression, save = false){
             })
             localStorage.setItem("history", JSON.stringify(history));
             validExpression = false;
-            getHistory();
+            getHistory(true);
         }
 
         return milesSeparator(eval(expression).toString());
@@ -181,18 +181,18 @@ function getLastNumbers(expression){
 }
 
 //Función que trae el historial desde Local Storage
-function getHistory(){
+function getHistory(newItem = false){
     const historyFromLS = localStorage.getItem("history");
     if(historyFromLS !== null && historyFromLS !== undefined){
         displayHistory.style.display = 'flex'
         history = JSON.parse(historyFromLS);
-        updateHistory();
+        updateHistory(newItem);
     } else {
         displayHistory.style.display = 'none'
     }
 }
 
-function updateHistory(){
+function updateHistory(newItem = false){
     displayHistory.innerHTML = "";
     let i = history.length;
     history.forEach((el) => {
@@ -200,9 +200,15 @@ function updateHistory(){
         h.classList.add('item');
         h.innerHTML = `
             <input type="text" readonly class="expression" value="${el.expression}">
-            <span class="result">${el.result}</span>
+            <input type="text" readonly class="result" value="${el.result}">
             <span class="index">${i}</span>
         `;
+        if(i === history.length && newItem){
+            h.classList.add('newItem');
+            setTimeout(() =>{
+                h.classList.remove('newItem');
+            }, 6200)
+        }
         displayHistory.appendChild(h);
         i--
     })
@@ -220,6 +226,6 @@ function readHistoryItem(item){
     expression = item.children[0].value;
     displayExpression.value = expression;
     displayExpression.scrollLeft = display.scrollWidth;
-    displayResult.innerText = item.children[1].innerText;
+    displayResult.innerText = item.children[1].value;
     validExpression = false;
 }
