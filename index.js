@@ -1,17 +1,16 @@
 const display = document.getElementById('display');
+const displayHistory = document.getElementById('history');
 const displayExpression = display.children[0]; //En este elemento se imprime lo que el usuario ingresa
 const displayResult = display.children[1]; //En este elemento se imprime el resultado que devuelve la función result()
 const keys = document.getElementsByClassName('key');
 let history = [];
 let expression = "";
+let validExpression = false;
 let lastExpression = "";
 let number = "";
 
-//Si existe un historial en Local Storage, se carga en arreglo history 
-getHistory = localStorage.getItem("history");
-if(getHistory !== null && getHistory !== undefined){
-    history = JSON.parse(getHistory);
-}
+//Si existe un historial en Local Storage, se carga en arreglo history
+getHistory();
 
 //Botones/teclas clasificadas en grupos 
 const actions = ["Enter","Backspace","Delete"];
@@ -62,6 +61,7 @@ function calculate(key){
             number = getLastNumbers(expression); //Identifica si al final de la expresión hay un grupo de números y los almacena en "number"
             number += key;
             expression = lastExpression + milesSeparator(number); //Concatena la expresión y el nuevo grupo de número separado por miles.
+            validExpression = true;
             break;
         case "operators":
             number = "";
@@ -80,9 +80,11 @@ function calculate(key){
                 }
                 expression = expression.replace("*", "×"); // Formatea la expresión para mostrar al usuario
                 expression = expression.replace("/", "÷"); // Formatea la expresión para mostrar al usuario
+                validExpression = false;
                 break;
             } else if(key === "-" && expression !== "-"){ //Permite ingreso de "-" como primer caracter
                 expression += key; //Agrega el valor de botón/tecla a la expresión
+                validExpression = false;
                 break;
             }
         case "actions":
@@ -97,7 +99,7 @@ function calculate(key){
                 expression = expression.toString().slice(0, -1);
                 expression =  milesSeparator(expression); //Recalcula la separación de miles
             }
-            if(key === "Enter"){ //Trae el resultado de la expresión
+            if(key === "Enter" && validExpression){ //Trae el resultado de la expresión
                 lastExpression = "";
                 number = "";
                 expression = result(expression, true); //Reemplaza la expresión por el resultado
@@ -119,6 +121,7 @@ function parentheses(expression){
     const countClosed = expression.split(")").length-1;
     const lastCharacter = expression[expression.length-1];
     if((!operators.includes(`${lastCharacter}`) || lastCharacter === ")") && countOpen > countClosed){
+        validExpression = true;
         return ")";
     }
     return "(";
@@ -126,9 +129,10 @@ function parentheses(expression){
 
 //Función principal realizar los cálculos
 function result(expression, save = false){
+    //getHistory(); //descarga el historial desde Local Storage y lo muestra en pantalla
     try{
         if(!expression) return "";
-        let expressionUser = expression;
+        const expressionUser = expression;
         expression = expression
         .replaceAll(",", "")
         .replaceAll("×", "*")
@@ -137,13 +141,19 @@ function result(expression, save = false){
         .replaceAll(/\)\(/g, ")*(") // ...)(... => ...)*(...
         .replaceAll(/\((.*?)\)(\d)/g, "($1)*$2") // (expresión)num => (expresión)*num
         .replaceAll(/(\d)\((.*?)\)/g, "$1*($2)") // num(expresión) => num*(expresión)
+
         if(save){
-            history.push({
+            const prueba = [...history];
+            console.log(prueba);
+            history.unshift({
                 "expression": expressionUser,
                 "result": milesSeparator(eval(expression).toString())
             })
-            localStorage.setItem("history", JSON.stringify(history))
+            localStorage.setItem("history", JSON.stringify(history));
+            validExpression = false;
+            getHistory();
         }
+
         return milesSeparator(eval(expression).toString());
     } catch (err){
         if(err) return "Error";
@@ -168,4 +178,48 @@ function getLastNumbers(expression){
         }
         return newNumbers.split("").reverse().join("");
     } else return ""
+}
+
+//Función que trae el historial desde Local Storage
+function getHistory(){
+    const historyFromLS = localStorage.getItem("history");
+    if(historyFromLS !== null && historyFromLS !== undefined){
+        displayHistory.style.display = 'flex'
+        history = JSON.parse(historyFromLS);
+        updateHistory();
+    } else {
+        displayHistory.style.display = 'none'
+    }
+}
+
+function updateHistory(){
+    displayHistory.innerHTML = "";
+    let i = history.length;
+    history.forEach((el) => {
+        let h = document.createElement("div");
+        h.classList.add('item');
+        h.innerHTML = `
+            <input type="text" readonly class="expression" value="${el.expression}">
+            <span class="result">${el.result}</span>
+            <span class="index">${i}</span>
+        `;
+        displayHistory.appendChild(h);
+        i--
+    })
+    
+    const allItems = displayHistory.getElementsByClassName('item');
+    Array.from(allItems).forEach((item) => {
+        item.children[0].scrollLeft = item.children[0].scrollWidth;
+        item.addEventListener('click', () => {
+            readHistoryItem(item);
+        });
+    });
+}
+
+function readHistoryItem(item){
+    expression = item.children[0].value;
+    displayExpression.value = expression;
+    displayExpression.scrollLeft = display.scrollWidth;
+    displayResult.innerText = item.children[1].innerText;
+    validExpression = false;
 }
